@@ -1,0 +1,30 @@
+{
+  "name": "@agentdeck/mobile",
+  "private": true,
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "start": "expo start",
+    "web": "expo start --web",
+    "android": "expo run:android",
+    "ios": "expo run:ios"
+  },
+  "dependencies": {
+    "@agentdeck/protocol": "file:../../packages/protocol",
+    "@expo/metro-runtime": "~5.0.4",
+    "expo": "~53.0.0",
+    "expo-blur": "~14.1.5",
+    "expo-camera": "~16.1.11",
+    "expo-linear-gradient": "~14.1.5",
+    "expo-secure-store": "~14.2.4",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "react-native": "0.79.6",
+    "react-native-safe-area-context": "^5.4.0",
+    "react-native-web": "^0.20.0"
+  },
+  "devDependencies": {
+    "@types/react": "~19.0.10",
+    "typescript": "~5.8.3"
+  }
+}

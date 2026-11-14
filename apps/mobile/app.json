@@ -1,0 +1,106 @@
+{
+  "expo": {
+    "name": "AgentDeck",
+    "slug": "agentdeck",
+    "version": "1.0.0",
+    "scheme": "agentdeck",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "ios": {
+      "bundleIdentifier": "com.agentdeckapp.agentdeck",
+      "buildNumber": "1",
+      "supportsTablet": false,
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSCameraUsageDescription": "AgentDeck 用相机扫描电脑上的配对二维码，画面不会保存或上传",
+        "CFBundleDevelopmentRegion": "zh-Hans",
+        "CFBundleAllowMixedLocalizations": true
+      },
+      "privacyManifests": {
+        "NSPrivacyTracking": false,
+        "NSPrivacyTrackingDomains": [],
+        "NSPrivacyCollectedDataTypes": [
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeEmailAddress",
+            "NSPrivacyCollectedDataTypeLinked": true,
+            "NSPrivacyCollectedDataTypeTracking": false,
+            "NSPrivacyCollectedDataTypePurposes": [
+              "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+            ]
+          },
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeUserID",
+            "NSPrivacyCollectedDataTypeLinked": true,
+            "NSPrivacyCollectedDataTypeTracking": false,
+            "NSPrivacyCollectedDataTypePurposes": [
+              "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+            ]
+          }
+        ],
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "CA92.1"
+            ]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "C617.1",
+              "0A2A.1",
+              "3B52.1"
+            ]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "35F9.1"
+            ]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryDiskSpace",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "E174.1",
+              "85F4.1"
+            ]
+          }
+        ]
+      }
+    },
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "imageWidth": 160,
+      "backgroundColor": "#07080C",
+      "resizeMode": "contain"
+    },
+    "plugins": [
+      [
+        "expo-secure-store",
+        {
+          "faceIDPermission": false
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "AgentDeck 用相机扫描电脑上的配对二维码，画面不会保存或上传",
+          "microphonePermission": false,
+          "recordAudioAndroid": false
+        }
+      ],
+      "./plugins/withFmtCxx17"
+    ],
+    "web": {
+      "bundler": "metro"
+    },
+    "icon": "./assets/icon.png",
+    "description": "手机上写一句任务，派给你自己电脑上在线的 AI",
+    "extra": {
+      "relayUrl": "wss://relay.agentdeckapp.com",
+      "privacyUrl": "https://agentdeckapp.com/privacy",
+      "supportUrl": "https://agentdeckapp.com/support"
+    }
+  }
+}

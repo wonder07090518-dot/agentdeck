@@ -1,0 +1,25 @@
+{
+  "name": "agentdeck",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "test": "npm run build && vitest run",
+    "agentdeck": "node packages/daemon/dist/cli.js"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/nodemailer": "^8.0.2",
+    "@types/ws": "^8.18.1",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  },
+  "bin": {
+    "agentdeck": "packages/daemon/dist/cli.js"
+  },
+  "license": "MIT"
+}

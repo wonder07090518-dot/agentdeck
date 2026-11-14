@@ -1,0 +1,4 @@
+{"type":"thread.started","thread_id":"codex-thread-1"}
+{"type":"item.completed","item":{"id":"msg1","type":"agent_message","text":"已完成修改"}}
+{"type":"item.completed","item":{"id":"files1","type":"file_change","changes":[{"path":"hello.txt","kind":"update"}]}}
+{"type":"turn.completed","usage":{"input_tokens":20,"output_tokens":12}}

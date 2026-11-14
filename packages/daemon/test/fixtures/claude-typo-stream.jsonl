@@ -1,0 +1,5 @@
+{"type":"system","subtype":"init","session_id":"00000000-0000-4000-8000-000000000001"}
+{"type":"assistant","message":{"content":[{"type":"text","text":"Fixing the typo."},{"type":"tool_use","id":"edit_1","name":"Edit","input":{"file_path":"typo.txt","old_string":"wrold","new_string":"world"}}]}}
+{"type":"user","message":{"content":[{"type":"tool_result","tool_use_id":"edit_1","content":"Edited typo.txt","is_error":false}]}}
+{"type":"assistant","message":{"content":[{"type":"text","text":"Changed wrold to world."}]}}
+{"type":"result","subtype":"success","is_error":false,"session_id":"00000000-0000-4000-8000-000000000001","total_cost_usd":0.001,"usage":{"input_tokens":24,"output_tokens":12}}

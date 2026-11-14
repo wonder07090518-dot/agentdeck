@@ -1,0 +1,5 @@
+{"type":"thread.started","thread_id":"demo-auto-1"}
+{"type":"item.completed","item":{"id":"r1","type":"reasoning","text":"这是代码拼写修复：先定位 hello.py 中的错误，再改文件。"}}
+{"type":"item.completed","item":{"id":"f1","type":"file_change","changes":[{"path":"hello.py","kind":"update"}]}}
+{"type":"item.completed","item":{"id":"msg1","type":"agent_message","text":"已把 hello.py 里的拼写错误 wrold 改成 world，并检查文件可以运行。"}}
+{"type":"turn.completed","usage":{"input_tokens":48,"output_tokens":36}}

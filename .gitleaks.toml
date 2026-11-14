@@ -1,0 +1,8 @@
+# Local allowlist for known false positives. Re-run:
+#   gitleaks detect --source . --no-git
+title = "AgentDeck"
+
+[[allowlists]]
+description = "Boolean login check, not a secret (packages/daemon/src/probe.ts)"
+regexes = ['''j\.loggedIn===true''']
+paths = ['''packages/daemon/src/probe\.ts''']

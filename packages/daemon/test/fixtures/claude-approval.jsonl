@@ -1,0 +1,3 @@
+{"type":"system","subtype":"init","session_id":"claude-approval-ref"}
+{"type":"assistant","message":{"content":[{"type":"tool_use","id":"shell1","name":"Bash","input":{"command":"echo hello"}}]}}
+{"type":"result","subtype":"success","usage":{"input_tokens":1,"output_tokens":1}}

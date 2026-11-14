@@ -1,0 +1,5 @@
+import { execFileSync } from 'node:child_process';
+import { detectBinary, stub, type AgentAdapter } from './index.js';
+const binary=()=>process.env.AGENTDECK_OLLAMA_BIN||'ollama';
+export function localModels():string[]{try{return execFileSync(binary(),['list'],{encoding:'utf8',timeout:2000,stdio:['ignore','pipe','ignore']}).trim().split('\n').slice(1).map(l=>l.trim().split(/\s+/)[0]).filter(Boolean);}catch{return [];}}
+export const ollama:AgentAdapter={...stub('ollama'),async detect(){const info=await detectBinary('ollama',binary());if(!info)return null;const models=localModels();return {...info,models,dispatchable:models.length>0,accountHint:'本地运行，无云端额度',supports:{jsonOut:false,resume:false,interactive:false,permissions:false}};},buildDelegateRun(r){const models=localModels();if(!models.length)throw Error('Ollama 没有已安装的本地模型');return {cmd:binary(),args:['run',models[0],r.prompt],cwd:r.workspace.path,env:process.env,stdin:'closed',parseMode:'text'};},parse(line){return {events:[{type:'agent.message',origin:'agent',payload:{text:line}}]};},mapExit(code,stderr){return {ok:code===0,reason:code?stderr:undefined};}};

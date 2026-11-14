@@ -1,0 +1,37 @@
+node_modules/
+dist/
+coverage/
+.agentdeck/
+*.db
+*.db-shm
+*.db-wal
+packages/*/dist/
+*.tsbuildinfo
+.expo/
+apps/mobile/.expo/
+# Expo CNG: native projects are regenerated from app.json.
+apps/mobile/ios/
+apps/mobile/android/
+apps/mobile/dist-ios/
+
+apps/desktop/node_modules/
+apps/desktop/dist/
+apps/desktop/src-tauri/target/
+
+# Local diagnostic evidence; exclude from publication.
+shots/*.log
+
+# local secrets and machine state
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+!*.example.key
+relay.json
+**/.agentdeck/
+
+# diagnostics and private captures (do not publish)
+shots/_tmp*
+shots/_backup*
+.agent-notes/

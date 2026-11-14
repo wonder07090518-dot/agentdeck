@@ -1,0 +1,21 @@
+{
+  "name": "@agentdeck/daemon",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@agentdeck/protocol": "*",
+    "@agentdeck/adapters": "*",
+    "ws": "^8.18.3",
+    "@agentdeck/relay": "*"
+  },
+  "bin": {
+    "agentdeck": "./dist/cli.js"
+  }
+}
