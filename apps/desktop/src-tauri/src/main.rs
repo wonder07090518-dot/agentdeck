@@ -2,39 +2,24 @@
 use std::{process::{Child, Command, Stdio}, sync::Mutex, time::{Duration, Instant}, io::{BufRead, BufReader}};
 use tauri::{Manager, menu::{Menu, MenuItem}, tray::TrayIconBuilder};
 struct Daemon(Mutex<Option<Child>>);
-// relay.json uses the same relayUrl field as daemon connection files.
-fn configured_relay(app: &tauri::AppHandle, explicit: Option<String>) -> Result<String, String> {
-    let nonempty = |value: String| {
-        let value = value.trim().to_owned();
-        if value.is_empty() { None } else { Some(value) }
-    };
-    if let Some(url) = explicit.and_then(nonempty) { return Ok(url); }
-    if let Some(url) = std::env::var("AGENTDECK_RELAY").ok().and_then(nonempty) { return Ok(url); }
-    let home = match std::env::var_os("AGENTDECK_HOME") {
-        Some(home) => std::path::PathBuf::from(home),
-        None => app.path().app_data_dir().map_err(|_| "Cannot locate app data; set AGENTDECK_RELAY or pass --relay to the CLI")?,
-    };
-    match std::fs::read_to_string(home.join("relay.json")) {
-        Ok(contents) => {
-            let config: serde_json::Value = serde_json::from_str(&contents)
-                .map_err(|_| "Invalid relay.json; expected JSON with a relayUrl string")?;
-            if let Some(url) = config.get("relayUrl").and_then(|v| v.as_str()).and_then(|v| nonempty(v.to_owned())) {
-                return Ok(url);
-            }
-        }
-        Err(error) if error.kind() == std::io::ErrorKind::NotFound => {},
-        Err(_) => return Err("Cannot read relay.json; set AGENTDECK_RELAY or pass --relay to the CLI".into()),
-    }
-    Err("No relay configured. Set AGENTDECK_RELAY, supply the login relay argument, or pass --relay to the CLI".into())
-}
 #[tauri::command]
 async fn login(app: tauri::AppHandle, email: String, password: String, relay: Option<String>) -> Result<(), String> {
     if app.state::<Daemon>().0.lock().unwrap().is_some() { return Err("already running".into()); }
-    let relay = configured_relay(&app, relay)?;
-    // Development sidecar: built Node CLI; credentials travel through environment, never argv.
-    let cli = std::env::var("AGENTDECK_CLI").unwrap_or_else(|_| "../../../packages/daemon/dist/cli.js".into());
-    let mut command = Command::new("node");
-    command.args([&cli, "login", "--relay", &relay])
+    // Installed resources only: neither Node on PATH nor a repository is required.
+    let resources = app.path().resource_dir().map_err(|_| "cannot locate resources")?.join("runtime");
+    let home = app.path().app_data_dir().map_err(|_| "cannot locate app data")?;
+    std::fs::create_dir_all(&home).map_err(|_| "cannot create app data")?;
+    let saved_relay = std::fs::read(home.join("relay.json")).ok()
+        .and_then(|bytes| serde_json::from_slice::<serde_json::Value>(&bytes).ok())
+        .and_then(|value| value.get("relayUrl").and_then(|url| url.as_str()).map(str::to_owned));
+    let relay = relay.filter(|s| !s.trim().is_empty())
+        .or_else(|| std::env::var("AGENTDECK_RELAY").ok().filter(|s| !s.trim().is_empty()))
+        .or(saved_relay).unwrap_or_else(|| "wss://relay.agentdeckapp.com".into());
+    let node_bin = if cfg!(windows) { resources.join("node.exe") } else { resources.join("node") };
+    let mut command = Command::new(node_bin);
+    command.arg(resources.join("packages/daemon/dist/cli.js"))
+        .args(["login", "--relay", &relay])
+        .current_dir(&home).env("AGENTDECK_HOME", &home)
         .env("AGENTDECK_EMAIL", email).env("AGENTDECK_PASSWORD", password)
         .stdin(Stdio::null()).stdout(Stdio::null()).stderr(Stdio::piped());
     #[cfg(windows)] { use std::os::windows::process::CommandExt; command.creation_flags(0x08000000); }
