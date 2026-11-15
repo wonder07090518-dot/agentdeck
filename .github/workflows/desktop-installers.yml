@@ -57,8 +57,6 @@ jobs:
         include:
           - os: macos-latest
             arch: arm64
-          - os: macos-13
-            arch: x64
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
