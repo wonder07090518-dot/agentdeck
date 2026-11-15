@@ -35,3 +35,5 @@ relay.json
 shots/_tmp*
 shots/_backup*
 .agent-notes/
+
+apps/desktop/src-tauri/runtime/

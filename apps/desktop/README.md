@@ -1,34 +1,41 @@
-# AgentDeck Windows 开发骨架
+# AgentDeck desktop
 
-Tauri 2 登录窗口和托盘，邮箱密码调用同一 Node CLI 协议，成功后隐藏窗口
-托盘状态和配对菜单目前是占位，不显示虚构余量
-这是开发包装，正式离线安装器还需把 Node daemon 制作为 sidecar 并随包分发
-当前 debug 安装器仍要求本机 Node 和仓库构建产物
+Official Windows (MSI, NSIS) and macOS (DMG) installers are built on GitHub
+Actions from this tree. Each installer includes a Node 24 runtime plus the
+compiled daemon, protocol, adapters, relay, and production dependencies. End
+users do not need Node on PATH or a source checkout. Windows also needs
+WebView2 (Tauri can bootstrap it). The builds are unsigned, so Windows
+SmartScreen and macOS Gatekeeper will show a warning until a code-signing
+certificate is added.
 
-Windows 安装 Node LTS、Rust 1.90 或更新的 stable MSVC、Visual Studio C++ Build Tools 和 WebView2
-先在仓库根运行 `npm install` 和 `npm run build`
-然后 PowerShell：
+The default public relay is `wss://relay.agentdeckapp.com`. Login credentials
+are passed only through environment variables, and daemon output is drained
+without logging. Account data lives in Tauri's per-user app data directory
+(`com.agentdeck.desktop`), used as `AGENTDECK_HOME`. The optional login
+invoke argument `relay` overrides `AGENTDECK_RELAY`, then `relay.json`
+(`relayUrl`) in that directory. No temporary relay URL is embedded.
 
-```powershell
-$env:AGENTDECK_RELAY = "wss://relay.example.com" # 换成自己的中转地址
-$env:AGENTDECK_CLI = (Resolve-Path ../../packages/daemon/dist/cli.js).Path
-npm install
-npm run tauri dev
-# 未签名 debug 安装包
-npm run tauri build -- --debug
+`prepare:runtime` stages ignored files under `src-tauri/runtime` and packages
+them as Tauri resources. In CI it downloads the official Node 24 build for the
+current OS and architecture. Locally you can point it at an existing Node 24
+tree with `AGENTDECK_NODE_DIR`.
+
+To produce installers from a developer machine after `npm ci` and
+`npm run build` at the repository root:
+
+```bash
+cd apps/desktop
+npm ci
+# Windows
+npx tauri build --bundles msi,nsis
+# macOS
+npx tauri build --bundles dmg
 ```
 
-以上命令从 `apps/desktop` 运行
-产物在 `src-tauri/target/debug/bundle/msi` 和 `nsis`
-退出托盘会终止此程序启动的 daemon，不会操作其他 daemon 或 cloudflared
-账号保存在用户 `.agentdeck/account.json`，可用 CLI `serve --relay ...` 重连
-Windows 签名和 Apple 公证需使用维护者自己的证书，本仓库不接入付费签名服务
-Linux 不做 Windows 交叉编译
+On Windows, `./apps/desktop/scripts/build-windows.ps1` can also wire portable
+tooling and the Visual Studio 2022 C++ Build Tools. Artifacts land in
+`apps/desktop/src-tauri/target/release/bundle/{msi,nsis,dmg}`.
 
-本机 Linux 的 Rust 1.85.1 低于锁定依赖要求，cargo check 未通过，尚未实测 Windows 安装包
-
-桌面登录的中转优先级：调用方可选 `relay` 参数 → `AGENTDECK_RELAY` →
-`AGENTDECK_HOME/relay.json`（未设置 home 时为 Tauri app data 目录）。
-文件格式为 `{"relayUrl":"wss://relay.example.com"}`，域名仅为占位。
-未配置时明确报错，没有默认公共中转。CLI 可显式传 `--relay`。
-凭据仍只通过子进程环境传递，不进入 argv。
+Login hides the window; the tray can reopen it or quit. Quit terminates only
+the daemon started by this desktop process. Pairing remains a disabled
+placeholder.
